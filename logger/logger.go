@@ -6,6 +6,8 @@ import (
 	"strconv"
 
 	"github.com/dhyaniarun1993/go-utility/errors"
+	"github.com/opentracing/opentracing-go"
+	"github.com/uber/jaeger-client-go"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -76,10 +78,15 @@ func (logger *Logger) WithContext(ctx context.Context) *Logger {
 	}
 
 	var newLogger *zap.Logger
-	if ctxTraceID, ok := ctx.Value("traceId").(string); ok {
-		newLogger = logger.With(zap.String("trace-id", ctxTraceID))
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		jaegerSpanContext := span.Context().(jaeger.SpanContext)
+		traceID := jaegerSpanContext.TraceID().String()
+		spanID := jaegerSpanContext.SpanID().String()
+		newLogger = logger.With(zap.String("trace-id", traceID),
+			zap.String("span-id", spanID))
+		return &Logger{newLogger}
 	}
-	return &Logger{newLogger}
+	return logger
 }
 
 //WithError return a new Logger with Error context

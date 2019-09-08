@@ -14,14 +14,14 @@ const (
 	defaultTracingHTTPHeader = "x-request-id"
 )
 
-type statusRecorder struct {
+type responseWriterInterceptor struct {
 	http.ResponseWriter
 	status      int
 	wroteHeader bool
 	traceID     string
 }
 
-func (rec *statusRecorder) WriteHeader(code int) {
+func (rec *responseWriterInterceptor) WriteHeader(code int) {
 	if rec.wroteHeader == false {
 		rec.wroteHeader = true
 		rec.status = code
@@ -67,9 +67,9 @@ func TraceRequest(tracer opentracing.Tracer, ignoredURLs []string,
 			ext.Component.Set(span, defaultComponentName)
 
 			jaegerSpanContext := span.Context().(jaeger.SpanContext)
-			traceID := jaegerSpanContext.String()
+			traceID := jaegerSpanContext.TraceID().String()
 
-			responseWriter := &statusRecorder{w, http.StatusInternalServerError, false, traceID}
+			responseWriter := &responseWriterInterceptor{w, http.StatusInternalServerError, false, traceID}
 			r = r.WithContext(opentracing.ContextWithSpan(r.Context(), span))
 
 			defer func() {
