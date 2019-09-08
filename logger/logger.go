@@ -93,7 +93,7 @@ func (logger *Logger) WithError(err error) *Logger {
 		newLogger = logger.With(zap.String("error", appError.Error()),
 			zap.String("errorstack", appError.ErrorStack()))
 	} else {
-		newLogger = logger.With(zap.String("error", appError.Error()))
+		newLogger = logger.With(zap.String("error", err.Error()))
 	}
 	return &Logger{newLogger}
 }
