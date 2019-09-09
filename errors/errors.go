@@ -56,13 +56,14 @@ const (
 // AppError provides interface for application errors
 type AppError interface {
 	Error() string
+	Caller() string
 	ErrorStack() string
 	StatusCode() int
 }
 
 type appError struct {
 	err        error
-	errstack   string
+	caller     string
 	message    string
 	statusCode statusCode
 }
@@ -76,20 +77,16 @@ func NewAppError(message string, statusCode statusCode, err error) AppError {
 		caller = details.Name() + ":" + strconv.Itoa(lineNumber)
 	}
 
-	errstack := "ErrorStack - \n"
-	if newError, ok := IsAppError(err); ok {
-		errstack = newError.ErrorStack() + fmt.Sprintf("\t%s - %s\n", caller, message)
-	} else {
-		errstack += fmt.Sprintf("\tError: %s\n", err.Error())
-		errstack += fmt.Sprintf("\t%s - %s\n", caller, message)
-	}
-
 	return &appError{
 		err:        err,
-		errstack:   errstack,
+		caller:     caller,
 		message:    message,
 		statusCode: statusCode,
 	}
+}
+
+func (err *appError) Caller() string {
+	return err.caller
 }
 
 func (err *appError) Error() string {
@@ -101,7 +98,22 @@ func (err *appError) StatusCode() int {
 }
 
 func (err *appError) ErrorStack() string {
-	return err.errstack
+	errorStack := "ErrorStack :-\n"
+
+	var tempError error
+	tempError = err
+	for tempError != nil {
+		errMessage := ""
+		if newError, ok := tempError.(*appError); ok {
+			errMessage = fmt.Sprintf("\t%s - %s", newError.Caller(), newError.Error())
+			tempError = newError.err
+		} else {
+			errMessage = fmt.Sprintf("\tError: %s", err.Error())
+			tempError = nil
+		}
+		errorStack += errMessage
+	}
+	return errorStack
 }
 
 // IsAppError checks if the error is appError and return the object
