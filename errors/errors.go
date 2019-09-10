@@ -108,7 +108,7 @@ func (err *appError) ErrorStack() string {
 			errMessage = fmt.Sprintf("\t%s - %s", newError.Caller(), newError.Error())
 			tempError = newError.err
 		} else {
-			errMessage = fmt.Sprintf("\tError: %s", err.Error())
+			errMessage = fmt.Sprintf("\tError: %s", tempError.Error())
 			tempError = nil
 		}
 		errorStack += errMessage
