@@ -10,8 +10,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/dhyaniarun1993/go-utility/authentication"
-	"github.com/dhyaniarun1993/go-utility/errors"
+	"github.com/dhyaniarun1993/foody-common/authentication"
+	"github.com/dhyaniarun1993/foody-common/errors"
 )
 
 // Configuration provides configuration for zap logger

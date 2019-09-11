@@ -6,7 +6,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/dhyaniarun1993/go-utility/errors"
+	"github.com/dhyaniarun1993/foody-common/errors"
 )
 
 // Async provides goroutines working on subtasks of a single task
