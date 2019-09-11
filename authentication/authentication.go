@@ -1,4 +1,4 @@
-package middlewares
+package authentication
 
 import (
 	"context"
@@ -11,23 +11,19 @@ import (
 type key string
 
 const (
-	userIDKey = key("userId")
-	appIDKey  = key("appId")
+	userIDHeader = "X-User-ID"
+	appIDHeader  = "X-App-ID"
+	userIDKey    = key("userId")
+	appIDKey     = key("appId")
 )
 
-// Authentication provides http.Handler for authentication
-type Authentication struct {
-	UserIDHeader string
-	AppIDHeader  string
-}
-
 // AuthHandler wraps http.Handler and handle
-func (config Authentication) AuthHandler() mux.MiddlewareFunc {
+func AuthHandler() mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		handlerFunc := func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
-			userID := r.Header.Get(config.UserIDHeader)
-			appID := r.Header.Get(config.AppIDHeader)
+			userID := r.Header.Get(userIDHeader)
+			appID := r.Header.Get(appIDHeader)
 			if userID == "" || appID == "" {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusUnauthorized)

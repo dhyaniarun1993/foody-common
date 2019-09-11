@@ -5,11 +5,13 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/dhyaniarun1993/go-utility/errors"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/dhyaniarun1993/go-utility/authentication"
+	"github.com/dhyaniarun1993/go-utility/errors"
 )
 
 // Configuration provides configuration for zap logger
@@ -84,6 +86,25 @@ func (logger *Logger) WithContext(ctx context.Context) *Logger {
 		spanID := jaegerSpanContext.SpanID().String()
 		newLogger = logger.With(zap.String("trace-id", traceID),
 			zap.String("span-id", spanID))
+	}
+
+	if userID, ok := authentication.GetUserID(ctx); ok {
+		if newLogger != nil {
+			newLogger = newLogger.With(zap.String("user-id", userID))
+		} else {
+			newLogger = logger.With(zap.String("user-id", userID))
+		}
+	}
+
+	if appID, ok := authentication.GetAppID(ctx); ok {
+		if newLogger != nil {
+			newLogger = newLogger.With(zap.String("app-id", appID))
+		} else {
+			newLogger = logger.With(zap.String("app-id", appID))
+		}
+	}
+
+	if newLogger != nil {
 		return &Logger{newLogger}
 	}
 	return logger
