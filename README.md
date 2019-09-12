@@ -1,1 +1,1 @@
-# go-utility
+# foody-common

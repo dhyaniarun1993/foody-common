@@ -11,10 +11,12 @@ import (
 type key string
 
 const (
-	userIDHeader = "X-User-ID"
-	appIDHeader  = "X-App-ID"
-	userIDKey    = key("userId")
-	appIDKey     = key("appId")
+	userIDHeader   = "X-User-ID"
+	userRoleHeader = "X-User-Role"
+	appIDHeader    = "X-App-ID"
+	userIDKey      = key("userId")
+	userRoleKey    = key("userRole")
+	appIDKey       = key("appId")
 )
 
 // AuthHandler wraps http.Handler and handle
@@ -23,6 +25,7 @@ func AuthHandler() mux.MiddlewareFunc {
 		handlerFunc := func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
 			userID := r.Header.Get(userIDHeader)
+			userRole := r.Header.Get(userRoleHeader)
 			appID := r.Header.Get(appIDHeader)
 			if userID == "" || appID == "" {
 				w.Header().Set("Content-Type", "application/json")
@@ -32,6 +35,7 @@ func AuthHandler() mux.MiddlewareFunc {
 			}
 
 			ctx = context.WithValue(ctx, userIDKey, userID)
+			ctx = context.WithValue(ctx, userRoleKey, userRole)
 			ctx = context.WithValue(ctx, appIDKey, appID)
 			r = r.WithContext(ctx)
 			next.ServeHTTP(w, r)
@@ -43,6 +47,12 @@ func AuthHandler() mux.MiddlewareFunc {
 // GetUserID extracts and return user id from context
 func GetUserID(ctx context.Context) (string, bool) {
 	id, ok := ctx.Value(userIDKey).(string)
+	return id, ok
+}
+
+// GetUserRole extracts and return user role from context
+func GetUserRole(ctx context.Context) (string, bool) {
+	id, ok := ctx.Value(userRoleKey).(string)
 	return id, ok
 }
 

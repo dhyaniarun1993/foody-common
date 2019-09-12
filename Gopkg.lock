@@ -46,7 +46,7 @@
   version = "v0.8.1"
 
 [[projects]]
-  digest = "1:042f4318540f23144e86fece78332544c90aab9d3acc477f24623ffe3642ae31"
+  digest = "1:f53b962835b372abf1166fd3c8c19002960e75d7a75336257cbc27e36fa67899"
   name = "github.com/uber/jaeger-client-go"
   packages = [
     ".",
@@ -68,8 +68,8 @@
     "utils",
   ]
   pruneopts = "UT"
-  revision = "85825f3f682a6fb24b12a4604be2a101432c7534"
-  version = "v2.17.0"
+  revision = "258182f41c1950c24e0acd5407abd810b6174d87"
+  version = "v2.18.0"
 
 [[projects]]
   digest = "1:d7b6fd08442b8d26882fae2c859a0d63962d72a533476a217d46743ed30cb803"
@@ -133,12 +133,12 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:777e729b475d3895c7229552aa10076f0d177daf37c0a72258006d046d329960"
+  digest = "1:a5158647b553c61877aa9ae74f4015000294e47981e6b8b07525edcbb0747c81"
   name = "go.uber.org/atomic"
   packages = ["."]
   pruneopts = "UT"
-  revision = "4e336646b2ef9fc6e47be8e21594178f98e5ebcf"
-  version = "v1.2.0"
+  revision = "df976f2515e274675050de7b3f42545de80594fd"
+  version = "v1.4.0"
 
 [[projects]]
   digest = "1:60bf2a5e347af463c42ed31a493d817f8a72f102543060ed992754e689805d1a"
@@ -169,7 +169,7 @@
   name = "golang.org/x/crypto"
   packages = ["pbkdf2"]
   pruneopts = "UT"
-  revision = "71b5226ff73902d121cd9dbbdfdb67045a805845"
+  revision = "227b76d455e791cb042b03e633e2f7fbcfdf74a5"
 
 [[projects]]
   branch = "master"

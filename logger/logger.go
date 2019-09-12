@@ -96,6 +96,14 @@ func (logger *Logger) WithContext(ctx context.Context) *Logger {
 		}
 	}
 
+	if userRole, ok := authentication.GetUserRole(ctx); ok {
+		if newLogger != nil {
+			newLogger = newLogger.With(zap.String("user-role", userRole))
+		} else {
+			newLogger = logger.With(zap.String("user-role", userRole))
+		}
+	}
+
 	if appID, ok := authentication.GetAppID(ctx); ok {
 		if newLogger != nil {
 			newLogger = newLogger.With(zap.String("app-id", appID))
