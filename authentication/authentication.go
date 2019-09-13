@@ -10,10 +10,11 @@ import (
 
 type key string
 
+// authentication constants
 const (
-	userIDHeader   = "X-User-ID"
-	userRoleHeader = "X-User-Role"
-	appIDHeader    = "X-App-ID"
+	UserIDHeader   = "X-User-ID"
+	UserRoleHeader = "X-User-Role"
+	AppIDHeader    = "X-App-ID"
 	userIDKey      = key("userId")
 	userRoleKey    = key("userRole")
 	appIDKey       = key("appId")
@@ -24,9 +25,9 @@ func AuthHandler() mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		handlerFunc := func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
-			userID := r.Header.Get(userIDHeader)
-			userRole := r.Header.Get(userRoleHeader)
-			appID := r.Header.Get(appIDHeader)
+			userID := r.Header.Get(UserIDHeader)
+			userRole := r.Header.Get(UserRoleHeader)
+			appID := r.Header.Get(AppIDHeader)
 			if userID == "" || appID == "" {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusUnauthorized)
