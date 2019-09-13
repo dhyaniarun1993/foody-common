@@ -15,9 +15,9 @@ const (
 	UserIDHeader   = "X-User-ID"
 	UserRoleHeader = "X-User-Role"
 	AppIDHeader    = "X-App-ID"
-	userIDKey      = key("userId")
-	userRoleKey    = key("userRole")
-	appIDKey       = key("appId")
+	UserIDKey      = key("userId")
+	UserRoleKey    = key("userRole")
+	AppIDKey       = key("appId")
 )
 
 // AuthHandler wraps http.Handler and handle
@@ -35,9 +35,9 @@ func AuthHandler() mux.MiddlewareFunc {
 				return
 			}
 
-			ctx = context.WithValue(ctx, userIDKey, userID)
-			ctx = context.WithValue(ctx, userRoleKey, userRole)
-			ctx = context.WithValue(ctx, appIDKey, appID)
+			ctx = context.WithValue(ctx, UserIDKey, userID)
+			ctx = context.WithValue(ctx, UserRoleKey, userRole)
+			ctx = context.WithValue(ctx, AppIDKey, appID)
 			r = r.WithContext(ctx)
 			next.ServeHTTP(w, r)
 		}
@@ -47,18 +47,18 @@ func AuthHandler() mux.MiddlewareFunc {
 
 // GetUserID extracts and return user id from context
 func GetUserID(ctx context.Context) (string, bool) {
-	id, ok := ctx.Value(userIDKey).(string)
+	id, ok := ctx.Value(UserIDKey).(string)
 	return id, ok
 }
 
 // GetUserRole extracts and return user role from context
 func GetUserRole(ctx context.Context) (string, bool) {
-	id, ok := ctx.Value(userRoleKey).(string)
+	id, ok := ctx.Value(UserRoleKey).(string)
 	return id, ok
 }
 
 // GetAppID extracts and return app id from context
 func GetAppID(ctx context.Context) (string, bool) {
-	id, ok := ctx.Value(appIDKey).(string)
+	id, ok := ctx.Value(AppIDKey).(string)
 	return id, ok
 }
