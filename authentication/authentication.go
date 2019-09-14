@@ -28,7 +28,7 @@ func AuthHandler() mux.MiddlewareFunc {
 			userID := r.Header.Get(UserIDHeader)
 			userRole := r.Header.Get(UserRoleHeader)
 			appID := r.Header.Get(AppIDHeader)
-			if userID == "" || appID == "" {
+			if userID == "" || appID == "" || userRole == "" {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusUnauthorized)
 				fmt.Fprintf(w, `{"message": %q}`, "Auth info missing.")
