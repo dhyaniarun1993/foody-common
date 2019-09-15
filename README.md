@@ -9,19 +9,19 @@ Foody common provides common libraries to be used in the system
 ```
 var f1Result int64
 var f2Result int64
+async, asyncCtx := async.WithContext(ctx)
 f1 := func() errors.AppError {
     var err errors.AppError
-    f1Result, err := DoSomething()
+    f1Result, err := DoSomething(asyncCtx)
     return err
 }
 
 f2 := func() errors.AppError {
     var err errors.AppError
-    f2Result, err := DoSomethingElse()
+    f2Result, err := DoSomethingElse(asyncCtx)
     return err
 }
 
-async, asyncCtx := async.WithContext(ctx)
 async.Go(f1)
 async.Go(f2)
 err := async.Wait()
@@ -59,7 +59,8 @@ logger.WithContext(ctx).WithError(err).Error("Some error occured")
 * **middleware** :- Middleware provides functions to easily chain middlewares and some common middleware like timeout middleware(that automatically timeout the request).
 
 ```
-router.Handle("/v1/my/route", middlewares.ChainHandlerFuncMiddlewares(myhandler, authentication.AuthHandler(), middlewares.TimeoutHandler(2*time.Second))).Methods("GET")
+router.Handle("/v1/my/route", middlewares.ChainHandlerFuncMiddlewares(myhandler, authentication.AuthHandler(),
+    middlewares.TimeoutHandler(2*time.Second))).Methods("GET")
 ```
 
 * **tracer** :- Tracer provides Opentracing Tracer and middleware to add the tracing information.
