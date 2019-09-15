@@ -2,8 +2,10 @@ package mongo
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -19,12 +21,15 @@ func (collection *Collection) BulkWrite(ctx context.Context, models []mongo.Writ
 	opts ...*options.BulkWriteOptions) (*mongo.BulkWriteResult, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.BulkWrite",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.BulkWrite", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("models::%v", models))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.BulkWrite(ctx, models, opts...)
 }
@@ -34,12 +39,15 @@ func (collection *Collection) InsertOne(ctx context.Context, document interface{
 	opts ...*options.InsertOneOptions) (*mongo.InsertOneResult, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.InsertOne",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.InsertOne", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("document::%v", document))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.InsertOne(ctx, document, opts...)
 }
@@ -49,12 +57,15 @@ func (collection *Collection) InsertMany(ctx context.Context, documents []interf
 	opts ...*options.InsertManyOptions) (*mongo.InsertManyResult, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.InsertMany",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.InsertMany", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("documents::%v", documents))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.InsertMany(ctx, documents, opts...)
 }
@@ -64,12 +75,15 @@ func (collection *Collection) DeleteOne(ctx context.Context, filter interface{},
 	opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.DeleteOne",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.DeleteOne", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v", filter))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.DeleteOne(ctx, filter, opts...)
 }
@@ -79,12 +93,15 @@ func (collection *Collection) DeleteMany(ctx context.Context, filter interface{}
 	opts ...*options.DeleteOptions) (*mongo.DeleteResult, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.DeleteMany",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.DeleteMany", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v", filter))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.DeleteMany(ctx, filter, opts...)
 }
@@ -94,12 +111,15 @@ func (collection *Collection) UpdateOne(ctx context.Context, filter interface{},
 	opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.UpdateOne",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.UpdateOne", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v, update::%v", filter, update))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.UpdateOne(ctx, filter, update, opts...)
 }
@@ -109,12 +129,15 @@ func (collection *Collection) UpdateMany(ctx context.Context, filter interface{}
 	opts ...*options.UpdateOptions) (*mongo.UpdateResult, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.UpdateMany",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.UpdateMany", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v, update::%v", filter, update))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.UpdateMany(ctx, filter, update, opts...)
 }
@@ -124,12 +147,15 @@ func (collection *Collection) ReplaceOne(ctx context.Context, filter interface{}
 	replacement interface{}, opts ...*options.ReplaceOptions) (*mongo.UpdateResult, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.ReplaceOne",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.ReplaceOne", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v, replacement::%v", filter, replacement))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.ReplaceOne(ctx, filter, replacement, opts...)
 }
@@ -139,12 +165,15 @@ func (collection *Collection) Aggregate(ctx context.Context, pipeline interface{
 	opts ...*options.AggregateOptions) (*mongo.Cursor, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.Aggregate",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.Aggregate", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("pipeline::%v", pipeline))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.Aggregate(ctx, pipeline, opts...)
 }
@@ -154,12 +183,15 @@ func (collection *Collection) CountDocuments(ctx context.Context, filter interfa
 	opts ...*options.CountOptions) (int64, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.CountDocuments",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.CountDocuments", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v", filter))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.CountDocuments(ctx, filter, opts...)
 }
@@ -169,12 +201,14 @@ func (collection *Collection) EstimatedDocumentCount(ctx context.Context,
 	opts ...*options.EstimatedDocumentCountOptions) (int64, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.EstimatedDocumentCount",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.EstimatedDocumentCount", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.EstimatedDocumentCount(ctx, opts...)
 }
@@ -184,12 +218,15 @@ func (collection *Collection) Distinct(ctx context.Context, fieldName string, fi
 	opts ...*options.DistinctOptions) ([]interface{}, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.Distinct",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.Distinct", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("fieldName::%v, filter::%v", fieldName, filter))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.Distinct(ctx, fieldName, filter, opts...)
 }
@@ -199,12 +236,15 @@ func (collection *Collection) Find(ctx context.Context, filter interface{},
 	opts ...*options.FindOptions) (*mongo.Cursor, error) {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.Find",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.Find", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v", filter))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.Find(ctx, filter, opts...)
 }
@@ -214,12 +254,15 @@ func (collection *Collection) FindOne(ctx context.Context, filter interface{},
 	opts ...*options.FindOneOptions) *mongo.SingleResult {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.FindOne",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.FindOne", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v", filter))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.FindOne(ctx, filter, opts...)
 }
@@ -229,12 +272,15 @@ func (collection *Collection) FindOneAndDelete(ctx context.Context, filter inter
 	opts ...*options.FindOneAndDeleteOptions) *mongo.SingleResult {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.FindOneAndDelete",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.FindOneAndDelete", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v", filter))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.FindOneAndDelete(ctx, filter, opts...)
 }
@@ -244,12 +290,15 @@ func (collection *Collection) FindOneAndReplace(ctx context.Context, filter inte
 	replacement interface{}, opts ...*options.FindOneAndReplaceOptions) *mongo.SingleResult {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.FindOneAndReplace",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.FindOneAndReplace", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v, replacement::%v", filter, replacement))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.FindOneAndReplace(ctx, filter, replacement, opts...)
 }
@@ -259,12 +308,15 @@ func (collection *Collection) FindOneAndUpdate(ctx context.Context, filter inter
 	update interface{}, opts ...*options.FindOneAndUpdateOptions) *mongo.SingleResult {
 	span := opentracing.SpanFromContext(ctx)
 	if span != nil {
-		collection.tracer.StartSpan(
-			"Mongo.FindOneAndUpdate",
+		newSpan := collection.tracer.StartSpan(
+			fmt.Sprintf("Mongo.%v.FindOneAndUpdate", collection.Name()),
 			opentracing.ChildOf(span.Context()),
 		)
-		ctx = opentracing.ContextWithSpan(ctx, span)
-		defer span.Finish()
+		ext.Component.Set(newSpan, "mongo.Client")
+		ext.SpanKind.Set(newSpan, "client")
+		ext.DBStatement.Set(newSpan, fmt.Sprintf("filter::%v, replacement::%v", filter, update))
+		ctx = opentracing.ContextWithSpan(ctx, newSpan)
+		defer newSpan.Finish()
 	}
 	return collection.Collection.FindOneAndUpdate(ctx, filter, update, opts...)
 }
