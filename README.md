@@ -26,8 +26,10 @@ async.Go(f1)
 async.Go(f2)
 err := async.Wait()
 if err != nil {
-	return productResponse, err
+	return 0, err
 }
+result := f1Result+f2Result
+return result, err
 ```
 * **authentication** :- Authentication provides middleware that checks and extracts User ID, User Role and App ID from header(send by Nginx after verifying auth token) and add then to request context.
 
