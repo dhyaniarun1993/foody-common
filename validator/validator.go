@@ -8,7 +8,7 @@ import (
 
 // validation  constants
 const (
-	IndiaPhoneNumberTag = "IndiaPhoneNumber"
+	IndiaPhoneNumberTag = "indiaPhoneNumber"
 )
 
 // IsIndiaPhoneNumber checks parameter pattern for valid phone number of India
