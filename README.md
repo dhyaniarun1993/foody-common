@@ -47,7 +47,7 @@ mongoClient := mongo.CreateMongoDBPool(config.Mongo, tracer)
 
 ```
 if err != nil {
-    errors.NewAppError("Unable to get data", errors.StatusInternalServerError, err)
+    errors.NewAppError("Unable to get data", http.StatusInternalServerError, err)
 }
 ```
 
