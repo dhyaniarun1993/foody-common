@@ -12,8 +12,8 @@ type key string
 
 // authentication constants
 const (
-	UserIDHeader   = "X-User-ID"
-	UserRoleHeader = "X-User-Role"
+	userIDHeader   = "X-User-ID"
+	userRoleHeader = "X-User-Role"
 	clientIDHeader = "X-Client-ID"
 	authKey        = key("auth")
 )
@@ -23,8 +23,8 @@ func AuthHandler() mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		handlerFunc := func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
-			userID := r.Header.Get(UserIDHeader)
-			userRole := r.Header.Get(UserRoleHeader)
+			userID := r.Header.Get(userIDHeader)
+			userRole := r.Header.Get(userRoleHeader)
 			clientID := r.Header.Get(clientIDHeader)
 			if userID == "" || clientID == "" || userRole == "" {
 				w.Header().Set("Content-Type", "application/json")
