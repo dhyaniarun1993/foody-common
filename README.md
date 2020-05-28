@@ -31,7 +31,7 @@ if err != nil {
 result := f1Result+f2Result
 return result, err
 ```
-* **authentication** :- Authentication provides middleware that checks and extracts User ID, User Role and App ID from header(send by Nginx after verifying auth token) and add then to request context.
+* **authentication** :- Authentication provides middleware that checks and extracts User ID, User Role and Client ID from header(send by Nginx after verifying auth token) and add then to request context.
 
 ```
 middlewares.ChainHandlerFuncMiddlewares(myHandler, authentication.AuthHandler())
@@ -43,7 +43,7 @@ middlewares.ChainHandlerFuncMiddlewares(myHandler, authentication.AuthHandler())
 mongoClient := mongo.CreateMongoDBPool(config.Mongo, tracer)
 ```
 
-* **errors** :- Errors provide customer error interface for all apps to use. It also provides error stack capability.
+* **errors** :- Errors provide custom error interface for all apps to use that includes error stack capability.
 
 ```
 if err != nil {
@@ -51,14 +51,14 @@ if err != nil {
 }
 ```
 
-* **logger** :- Logger provides a wrapper on top of uber zap logger with additional functionality such as logging trace ID, spanID, userID, userRole, appID, errorStack, errorTrace.
+* **logger** :- Logger provides a wrapper on top of uber zap logger with additional functionality such as logging trace ID, spanID, userID, userRole, clientID, errorStack, errorTrace.
 
 ```
 logger := logger.CreateLogger(config.Log)
 logger.WithContext(ctx).WithError(err).Error("Some error occured")
 ```
 
-* **middleware** :- Middleware provides functions to easily chain middlewares and some common middleware like timeout middleware(that automatically timeout the request).
+* **middleware** :- Middleware provides functions to easily chain middlewares and some common middleware like timeout middleware(that automatically timeout the request after provided interval).
 
 ```
 router.Handle("/v1/my/route", middlewares.ChainHandlerFuncMiddlewares(myhandler, authentication.AuthHandler(),
