@@ -88,27 +88,11 @@ func (logger *Logger) WithContext(ctx context.Context) *Logger {
 			zap.String("span-id", spanID))
 	}
 
-	if userID, ok := authentication.GetUserID(ctx); ok {
+	if auth, ok := authentication.GetAuthFromContext(ctx); ok {
 		if newLogger != nil {
-			newLogger = newLogger.With(zap.String("user-id", userID))
+			newLogger = newLogger.With(zap.String("user-id", auth.GetUserID()), zap.String("user-role", auth.GetUserRole()), zap.String("client-id", auth.GetClientID()))
 		} else {
-			newLogger = logger.With(zap.String("user-id", userID))
-		}
-	}
-
-	if userRole, ok := authentication.GetUserRole(ctx); ok {
-		if newLogger != nil {
-			newLogger = newLogger.With(zap.String("user-role", userRole))
-		} else {
-			newLogger = logger.With(zap.String("user-role", userRole))
-		}
-	}
-
-	if appID, ok := authentication.GetAppID(ctx); ok {
-		if newLogger != nil {
-			newLogger = newLogger.With(zap.String("app-id", appID))
-		} else {
-			newLogger = logger.With(zap.String("app-id", appID))
+			newLogger = logger.With(zap.String("user-id", auth.GetUserID()), zap.String("user-role", auth.GetUserRole()), zap.String("client-id", auth.GetClientID()))
 		}
 	}
 
